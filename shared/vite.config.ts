@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import path from 'path';
 
 export default defineConfig({
   root: __dirname,
@@ -20,5 +21,10 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
     coverage: { reportsDirectory: '../coverage/shared', provider: 'v8' },
+  },
+  resolve: {
+    alias: {
+      '@adventureworks-web/shared': path.resolve(__dirname, '../../shared/src/lib'),
+    },
   },
 });
