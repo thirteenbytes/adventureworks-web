@@ -1,25 +1,50 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useEffect, useState } from 'react';
-import AdventureWorksApiClient from './api/adventureworksApiClient';
+import { useState } from 'react';
+
+type EditViewState = 'view' | 'edit';
 
 export function App() {
-  const [data, setData] = useState(null);
-  const client = new AdventureWorksApiClient().instance;
+  const [editViewState, setEditViewState] = useState<EditViewState>('view');
+  const [inputValue, setInputValue] = useState<string>('');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {        
-        const response = await client.get('/Employee?page=1&pageSize=10');
-        setData(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
 
-    fetchData();
-  }, [client]);
+  const showViewPanel = () => {
+    return (
+      <>
+        <input
+          placeholder="Edit text here"
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+        />
+        <button onClick={() => setEditViewState('edit')}>Edit</button>
+      </>
+    );
+  };
 
-  return <div>Data: {JSON.stringify(data)}</div>;
+  const showEditPanel = () => {
+    return (
+      <>
+        {inputValue}
+        <button onClick={() => setEditViewState('view')}>Save</button>
+      </>
+    );
+  };
+
+  return (
+    <div>
+      {(() => {
+        switch (editViewState) {
+          case 'view':
+            return showViewPanel();
+          case 'edit':
+            return showEditPanel();
+        }
+      })()}
+    </div>
+  );
 }
 
 export default App;
